@@ -28,10 +28,7 @@
 内置三个公开 IPTV 播放列表（配置在 `server/serve.py` 的 `SOURCES`，可增删）：
 
 | 源 | 地址 |
-| --- | --- |
-| itv.fj.cn | `http://itv.fj.cn:33/all.m3u` |
-| altv.cddwsj.com | `http://altv.cddwsj.com:8737/all.m3u` |
-| 52top.com.cn | `http://www.52top.com.cn:8767/all.m3u`（带令牌，会过期） |
+
 
 聚合后 64 个频道：央视 21、CGTN 6、数字付费 3、省级卫视 32、教育文化 2。
 

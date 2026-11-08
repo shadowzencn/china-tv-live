@@ -1,0 +1,39 @@
+name: Refresh channels data
+
+# 定时重新抓取直播源、聚合频道并重建 site/channels.json 与单文件版。
+# 解决静态版最大的痛点：52top 源的令牌会过期，快照会变旧。
+#
+# 注意：GitHub Actions 的服务器在国外，能否访问 itv.fj.cn / 52top 等境内源
+# 取决于源站策略；抓取全部失败时本任务会退出且不提交，站点继续用上一次的快照。
+
+on:
+  schedule:
+    - cron: '0 21 * * *' # UTC 21:00 = 北京时间次日 5:00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Rebuild channels.json and single-file page
+        run: |
+          python build_single.py   # 先建单文件版，build_static 会把它一起放进 site/
+          python build_static.py
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/channels.json dist/china-tv-live-single.html
+          if git diff --cached --quiet; then
+            echo "No changes, skipping commit"
+          else
+            git commit -m "chore: refresh channels data"
+            git push
+          fi

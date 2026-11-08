@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>中国电视直播 · China TV Live</title>
+    <meta
+      name="description"
+      content="在线观看中国电视频道直播：CCTV 全频道、CGTN、全国各省级卫视，多信号源自动测速与切换，数字选台、快速换台。"
+    />
+    <meta name="theme-color" content="#0a0709" />
+    <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="vendor/videojs/global.css" />
+    <link rel="stylesheet" href="assets/css/app.css" />
+    <script type="module" src="vendor/videojs/i18n.js"></script>
+    <script type="module" src="vendor/videojs/locales/zh-CN.js"></script>
+    <script type="module" src="vendor/videojs/video.js"></script>
+    <script type="module" src="vendor/videojs/media/hlsjs-video.js"></script>
+    <script type="module" src="assets/js/app.js"></script>
+  </head>
+  <body>
+    <div class="aurora" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="中国电视直播">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M11.5 4.5 16 8l4.5-3.5" stroke="#cfd5e1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <rect x="4" y="9" width="24" height="17.5" rx="4.5" stroke="#e9edf4" stroke-width="1.8" />
+            <rect x="8.2" y="13" width="4.8" height="9.5" rx="1.2" fill="#e8442f" />
+            <rect x="13.6" y="13" width="4.8" height="9.5" rx="1.2" fill="#f4f6fa" />
+            <rect x="19" y="13" width="4.8" height="9.5" rx="1.2" fill="#f5b83d" />
+          </svg>
+        </span>
+        <span class="brand-text">
+          <strong>中国电视直播</strong>
+          <small>CHINA TV LIVE</small>
+        </span>
+      </a>
+
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input id="search" type="search" placeholder="搜索频道，如 CCTV、湖南、体育" autocomplete="off" spellcheck="false" aria-label="搜索频道" />
+        <kbd title="按 / 快速搜索">/</kbd>
+      </label>
+
+      <div class="clocks" aria-label="当前时间">
+        <div class="clock"><span>北京时间</span><time id="clock-cn">--:--</time></div>
+      </div>
+    </header>
+
+    <main class="layout" id="layout">
+      <section class="stage" aria-label="播放区">
+        <div class="player-shell" id="player-shell" data-mode="hls">
+          <media-i18n lang="zh-CN">
+            <video-player id="player">
+              <video-skin id="player-skin">
+                <hlsjs-video id="media" playsinline crossorigin preload="auto"></hlsjs-video>
+              </video-skin>
+            </video-player>
+          </media-i18n>
+          <div class="zap-osd" id="zap-osd" hidden>
+            <b id="zap-num"></b>
+            <span id="zap-name"></span>
+          </div>
+          <div class="overlay" id="overlay" hidden></div>
+          <button class="unmute-chip" id="unmute" type="button" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M11 5 6 9H3v6h3l5 4z" />
+              <path d="m22 9-6 6M16 9l6 6" />
+            </svg>
+            点击开启声音
+          </button>
+          <div class="ctx-menu" id="ctx-menu" role="menu" hidden>
+            <button type="button" role="menuitem" data-ctx="copy">复制播放地址</button>
+            <button type="button" role="menuitem" data-ctx="stats">统计信息</button>
+          </div>
+          <div class="stats-panel" id="stats" hidden>
+            <div class="stats-head">
+              <strong>统计信息</strong>
+              <button type="button" class="stats-close" data-ctx="stats-close" aria-label="关闭统计信息">×</button>
+            </div>
+            <dl class="stats-body" id="stats-body"></dl>
+            <button type="button" class="btn small" data-ctx="copy">复制播放地址</button>
+          </div>
+        </div>
+
+        <article class="now panel" id="now" aria-live="polite"></article>
+      </section>
+
+      <aside class="sidebar panel" aria-label="频道列表">
+        <div class="side-head">
+          <h2>频道 <span class="count" id="count"></span></h2>
+          <button class="btn icon ghost" id="btn-recheck" type="button" title="重新检测所有信号" aria-label="重新检测所有信号">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 12a8 8 0 1 1-2.34-5.66" />
+              <path d="M20 4v5h-5" />
+            </svg>
+          </button>
+        </div>
+        <div class="chips" id="chips" role="tablist" aria-label="频道分类"></div>
+        <ul class="channel-list" id="channel-list" role="listbox" aria-label="频道"></ul>
+        <div class="legend" aria-hidden="true">
+          <span><i data-status="ok"></i>可播放</span>
+          <span><i data-status="down"></i>暂不可用</span>
+          <span><i data-status="checking"></i>检测中</span>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <p>
+        本站不存储、不转码任何音视频内容。直播信号来自公开的第三方 IPTV 播放列表，经本地代理转发播放，节目版权归各电视台及版权方所有，请勿用于商业用途。
+      </p>
+      <p class="shortcuts">
+        <kbd>空格</kbd> 播放/暂停 <kbd>M</kbd> 静音 <kbd>F</kbd> 全屏 <kbd>I</kbd> 画中画 <kbd>[</kbd><kbd>]</kbd> 换台
+        <kbd>0-9</kbd> 数字选台 <kbd>T</kbd> 剧场模式 <kbd>/</kbd> 搜索
+      </p>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>中国电视直播 · 单文件版</title>
+    <meta
+      name="description"
+      content="中国电视频道直播单文件版：CCTV 全频道、CGTN、全国省级卫视，多源自动测速与切换，数字选台、快速换台。"
+    />
+    <meta name="theme-color" content="#0a0709" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230f1218'/%3E%3Cpath d='M23 10l9 7 9-7' fill='none' stroke='%23cfd5e1' stroke-width='3.5' stroke-linecap='round'/%3E%3Crect x='9' y='19' width='46' height='34' rx='9' fill='none' stroke='%23e9edf4' stroke-width='3.5'/%3E%3Crect x='17' y='27' width='9.5' height='18' rx='2.5' fill='%23e8442f'/%3E%3Crect x='27.25' y='27' width='9.5' height='18' rx='2.5' fill='%23f4f6fa'/%3E%3Crect x='37.5' y='27' width='9.5' height='18' rx='2.5' fill='%23f5b83d'/%3E%3C/svg%3E"
+    />
+    <style>
+__STYLE__
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#/" aria-label="中国电视直播">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M11.5 4.5 16 8l4.5-3.5" stroke="#cfd5e1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            <rect x="4" y="9" width="24" height="17.5" rx="4.5" stroke="#e9edf4" stroke-width="1.8" />
+            <rect x="8.2" y="13" width="4.8" height="9.5" rx="1.2" fill="#e8442f" />
+            <rect x="13.6" y="13" width="4.8" height="9.5" rx="1.2" fill="#f4f6fa" />
+            <rect x="19" y="13" width="4.8" height="9.5" rx="1.2" fill="#f5b83d" />
+          </svg>
+        </span>
+        <span class="brand-text"><strong>中国电视直播</strong><small>CHINA TV LIVE</small></span>
+      </a>
+
+      <label class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </svg>
+        <input id="search" type="search" placeholder="搜索频道，如 CCTV、湖南、体育" autocomplete="off" spellcheck="false" aria-label="搜索频道" />
+        <kbd title="按 / 快速搜索">/</kbd>
+      </label>
+
+      <div class="clock" aria-label="当前时间"><span>北京时间</span><time id="clock">--:--</time></div>
+    </header>
+
+    <main class="layout">
+      <section class="stage" aria-label="播放区">
+        <div class="player" id="player">
+          <video id="video" playsinline crossorigin="anonymous" preload="auto"></video>
+
+          <div class="osd" id="osd" hidden><b id="osd-num"></b><span id="osd-name"></span></div>
+
+          <div class="overlay" id="overlay" hidden></div>
+
+          <button class="unmute" id="unmute" type="button" hidden>点击开启声音</button>
+
+          <div class="stats" id="stats" hidden>
+            <div class="stats-head"><strong>统计信息</strong><button id="stats-close" type="button" aria-label="关闭">×</button></div>
+            <dl id="stats-body"></dl>
+          </div>
+
+          <div class="ctrls">
+            <button class="ctrl" id="btn-play" type="button" aria-label="播放/暂停"></button>
+            <div class="ctrl-vol">
+              <button class="ctrl" id="btn-mute" type="button" aria-label="静音"></button>
+              <input id="vol" type="range" min="0" max="1" step="0.05" value="0.8" aria-label="音量" />
+            </div>
+            <span class="live-badge"><i></i>LIVE</span>
+            <span class="ctrl-spacer"></span>
+            <button class="ctrl" id="btn-stats" type="button" aria-label="统计信息" title="统计信息">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2" /></svg>
+            </button>
+            <button class="ctrl" id="btn-pip" type="button" aria-label="画中画" title="画中画（I）">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" /><rect x="12" y="11" width="7" height="6" rx="1" fill="currentColor" stroke="none" /></svg>
+            </button>
+            <button class="ctrl" id="btn-full" type="button" aria-label="全屏" title="全屏（F）">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5" /></svg>
+            </button>
+          </div>
+          <div class="buf-bar"><i id="buf-bar"></i></div>
+        </div>
+
+        <article class="now panel" id="now" aria-live="polite"></article>
+      </section>
+
+      <aside class="sidebar panel" aria-label="频道列表">
+        <div class="side-head">
+          <h2>频道 <span class="count" id="count">加载中…</span></h2>
+          <button class="btn icon" id="btn-recheck" type="button" title="重新检测所有信号" aria-label="重新检测所有信号">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66" /><path d="M20 4v5h-5" /></svg>
+          </button>
+        </div>
+        <div class="chips" id="chips" role="tablist" aria-label="频道分类"></div>
+        <ul class="list" id="list" role="listbox" aria-label="频道"></ul>
+        <div class="legend" aria-hidden="true">
+          <span><i class="dot" data-status="ok"></i>可播放</span>
+          <span><i class="dot" data-status="down"></i>暂不可用</span>
+          <span><i class="dot" data-status="checking"></i>检测中</span>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <p>
+        单文件版：整个页面（含播放器、频道数据）都在一个 HTML 里，直连公开的第三方 IPTV 播放列表。本站不存储、不转码任何音视频内容，节目版权归各电视台及版权方所有，请勿用于商业用途。
+      </p>
+      <p>
+        <kbd>空格</kbd> 播放/暂停 <kbd>M</kbd> 静音 <kbd>F</kbd> 全屏 <kbd>I</kbd> 画中画 <kbd>[</kbd><kbd>]</kbd> 换台
+        <kbd>0-9</kbd> 数字选台 <kbd>T</kbd> 剧场模式 <kbd>/</kbd> 搜索 · 数据生成于 __BUILD_TIME__
+      </p>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+__HLS__
+    </script>
+    <script>
+      window.__CHANNELS__ = __DATA__;
+    </script>
+    <script>
+__PLAYER__
+    </script>
+  </body>
+</html>

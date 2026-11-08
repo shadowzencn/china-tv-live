@@ -1,0 +1,35 @@
+name: Deploy static site to GitHub Pages
+
+# 把 site/ 目录发布到 GitHub Pages。
+# 注意：直播源全是 http://，Pages 的 https 页面会被浏览器按混合内容拦截，
+# 在线播放大概率不可用（页面会显示警告条）。此部署主要用于项目展示，
+# 以及提供 dist/china-tv-live-single.html 的下载入口（下载后双击可看）。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4
